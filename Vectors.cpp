@@ -110,7 +110,7 @@ void Operations() {
 	std::cout << glm::to_string(Reflect) << std::endl;
 }
 
-int main() {
+int vector() {
 	Constructors();
 	Components();
 	Swizzle();
