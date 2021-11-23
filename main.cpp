@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 const int Width = 800;
 const int Height = 600;
@@ -48,6 +49,33 @@ int main() {
 		glm::vec3{ 1.0f, -1.0f, 0.0f },
 		glm::vec3{ 0.0f, 1.0f, 0.0f },
 	};
+
+	// Model Matrix
+	glm::mat4 ModelMatrix = glm::identity<glm::mat4>();
+
+	// View Matrix
+	glm::vec3 Eye{ 0, 0, 10 };
+	glm::vec3 Center{ 0, 0, 0 };
+	glm::vec3 Up{ 0, 1, 0 };
+	glm::mat4 ViewMatrix = glm::lookAt(Eye, Center, Up);
+
+	// Projection Matrix
+	constexpr float FoV = glm::radians(45.0f);
+	const float AspectRatio = Width / Height;
+	const float Near = 0.001f;
+	const float Far = 1000.0f;
+	glm::mat4 ProjectionMatrix = glm::perspective(FoV, AspectRatio, Near, Far);
+
+	// ModelViewProjection
+	glm::mat4 ModelViewProjection = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+	// Aplicar a ModelViewProjection nos vértices do triângulo
+	for (glm::vec3& Vertex : Triangle) {
+		glm::vec4 ProjectedVertex = ModelViewProjection * glm::vec4{ Vertex, 1.0f };
+
+		ProjectedVertex /= ProjectedVertex.w;
+		Vertex = ProjectedVertex;
+	}
 
 	// Copiar os vértices do trinagulo para a memória da GPU
 	GLuint VertexBuffer;
